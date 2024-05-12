@@ -1,4 +1,4 @@
-
+#kafka
 **Human:**
 你可以教我kafka的基礎觀念嗎
 

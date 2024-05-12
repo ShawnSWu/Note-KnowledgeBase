@@ -1,4 +1,4 @@
-
+#kafka 
 # 1.  一個Broker裏面長怎樣?
 
 > [!info] 概念
@@ -15,46 +15,28 @@
 另一方面,有些窗口可能會因故暫時關閉維修,那麼所有的顧客都只能去其他還開著的窗口取餐了。為了應付這種情況，麥當勞會為每個窗口(**Partition**)備份幾個一模一樣的窗口(**Replica**)。
 當有一個主窗口(Leader Replica)關閉時,它旁邊的備份窗口(Follower Replica)就會立即接手工作，繼續為顧客服務,這樣顧客們就不會因為某個窗口關閉而受影響了。
 
-### 1. Partition
+> 點擊查看各自的詳細
+### 1. [[Partition (分區)]]
 
-Partition是Kafka中實現分區和並行處理的基本單位。每個Topic會被分為一個或多個Partition,生產者發送消息時會被攤平分散到不同的Partition中,消費者則根據Partition並行地訂閱和消費數據。
+- 在Kafka中，一個主題（topic）可以被分成多個 Partition (分區)。
+- 分區是Message的基本單位，每個 Partition (分區) 都是有序的Message序列。
+- 每個 Partition (分區) 在物理上都被保存在一個或多個伺服器上，以實現容錯性和擴展性。
 
-有以下特點:
-- **每個Partition都是一個有序、不可變的消息序列**，簡單來說是Queue的概念，所以取資料時也是First in First out，也正因如此 會需要紀錄現在Partition被消費到了哪個位置，以便於之後繼續從這個位置開始讀取Message，記錄這個位置的名詞叫做Offset(偏移量)。
+正是因為這樣 Partition (分區) 機制，才允許Kafka集群可以水平擴展，提高了消息處理的吞吐量， 通過將消息分散到多個分區中，Kafka能夠在多個伺服器上平衡負載，實現分佈式消息處理。
 
-	**偏移量 (Offset)**：是指Message在Topic中的位置。offset是Kafka用來記錄消息消費進度的一種機制。通常是一個單調遞增的序列號，指明了消費者在 該Partition內 已經消費到了哪個位置
-  
-- 一個Partition只能被一個消費者群組內的一個消費者消費。
+### 2. [[Replica (副本)]]
 
-- 合理地增加Partition數量,可以提高Kafka的吞吐量和並行能力
-  
-  以下是一個Topic中的Partition示意圖：
-  ![[Screenshot 2024-05-12 at 2.21.58 AM.png]]
+- 在Kafka中，每個 Partition (分區) 都可以有一個或多個 Replica (副本)。
+- Replica (副本) 是對 Partition (分區) 內容的複製，它們被保存在Kafka集群中的不同伺服器上。
 
-### 2. Replica
-
-為了實現容錯性,Kafka為每個Partition維護了多個Replica副本,分布在不同的Broker上，
-
-概念上像這樣：
-![[Screenshot 2024-05-12 at 2.29.16 AM.png]]
-在 **Broker 101的Partition 0** 會被備份在 **Broker 102**，**Broker 101的Partition 1** 會被備份在 **Broker 103**，
-
-有以下2種Replica角色:
-
-- Leader Replica: 每個Partition有且只有一個Leader,它處理來自生產者的所有寫入請求,以及來自消費者的讀取請求。
-- ISR Replica(Follower): Follower是Leader的備份副本,定期從Leader複製數據,保持與Leader的數據一致。如果Leader失效,其中一個Follower會被選為新的Leader。
-
-所有的生產請求都由Leader處理,然後**由Leader將消息複製到所有的Follower副本上**。如果Follower與Leader之間的數據發生不一致,就會被認為是過時的,需要被Leader替換掉。
-
+正是因為 Replica (副本)的機制，提高了系統的可靠性和容錯性。當一個伺服器失效時，可以從其它伺服器上的 Replica (副本) 中恢復。
 
 > [!important] 
 > 正是透過 **Partition**和**Replica**的設計,Kafka實現了水平擴展、負載均衡和容錯機制。
-**Partition**是水平礦展消息處理的基礎,而**Replica**則提供了冗餘備份和自動故障轉移能力。
+**Partition**是水平礦展消息處理的基礎,而**Replica**則提供了備份和自動故障轉移能力。
 > 
 > 透過這種方式，一個Broker本身不只紀錄自己的資料，也需要幫別的Broker備份資料，這就是為什麼有其中幾個節點掛掉後，系統本身還可以正常運作，因為其他Broker可以把責任給扛起來
 
 
-# 2. ZooKeeper
-
-**ZooKeeper的作用** ZooKeeper主要被用於執行集群管理、Leader選舉、檢測加入/離開節點等關鍵任務,保證Kafka集群的穩定。
-
+概念圖如下：
+![[Pasted image 20240512121046.png]]

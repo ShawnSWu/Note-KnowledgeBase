@@ -1,4 +1,4 @@
-
+#kafka 
 ## Consumer
 Consumer使用group.id屬性將自己訂閱到Consumer群組時,此時Consumer是無法指定要消費的partition的。
 
