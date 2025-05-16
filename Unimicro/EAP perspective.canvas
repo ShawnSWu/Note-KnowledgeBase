@@ -1,0 +1,24 @@
+{
+	"nodes":[
+		{"id":"a2800d51a75a847e","type":"text","text":"# EAP\n### Equipment Automation Program (設備自動化程式)","x":-235,"y":292,"width":137,"height":50,"color":"4"},
+		{"id":"fad4ebe8531d42ad","type":"text","text":"# EAP\n### Equipment Automation Program (設備自動化程式)","x":-83,"y":287,"width":135,"height":51,"color":"4"},
+		{"id":"549cf50a00d5403d","type":"text","text":"# EAP\n### Equipment Automation Program (設備自動化程式)","x":-1,"y":177,"width":63,"height":159,"color":"4"},
+		{"id":"f6117360a33a21e5","type":"text","text":"# EAP\n### Equipment Automation Program (設備自動化程式)","x":75,"y":177,"width":61,"height":167,"color":"4"},
+		{"id":"22367faff5ee0f16","type":"text","text":"# EAP\n### Equipment Automation Program (設備自動化程式)","x":-8,"y":190,"width":144,"height":54,"color":"4"},
+		{"id":"96630705b63da57d","type":"text","text":"# EAP\n### Equipment Automation Program (設備自動化程式)","x":1,"y":257,"width":134,"height":50,"color":"4"},
+		{"id":"69638ed286535378","type":"text","text":"# EAP\n### Equipment Automation Program","x":-233,"y":168,"width":372,"height":174,"color":"4"},
+		{"id":"9aad898dc630d2ec","type":"text","text":"# MES\n## Manufacturing Execution System\n###","x":551,"y":712,"width":520,"height":112,"color":"4"},
+		{"id":"09387402d538c868","type":"text","text":"# ECS\n\n## ECS will directly check the equipment status in the EDC's database.\n\n","x":-1333,"y":-200,"width":558,"height":168,"color":"4"},
+		{"id":"c586aad2fd89b85d","type":"text","text":"# Real Equipment\n","x":-1135,"y":859,"width":879,"height":140},
+		{"id":"a599659cb03d31ca","type":"text","text":"# RMS\n### Recipe Management System","x":-320,"y":-465,"width":1294,"height":162,"color":"4"}
+	],
+	"edges":[
+		{"id":"f5fa989d88405af2","fromNode":"c586aad2fd89b85d","fromSide":"left","toNode":"a2800d51a75a847e","toSide":"left","color":"6","label":"1. send CarrierID \n(or Lot ID)"},
+		{"id":"440ccaf17fa5fb04","fromNode":"549cf50a00d5403d","fromSide":"bottom","toNode":"c586aad2fd89b85d","toSide":"right","color":"6","label":"7.Issue PP select command to EQ."},
+		{"id":"f6bc06d410d37b19","fromNode":"69638ed286535378","fromSide":"bottom","toNode":"c586aad2fd89b85d","toSide":"top","color":"6","label":"5. Retrieve Recipe body \nfrom EQ using Recipe ID."},
+		{"id":"5528bbe3591d327b","fromNode":"fad4ebe8531d42ad","fromSide":"right","toNode":"9aad898dc630d2ec","toSide":"top","color":"6","label":"2. Send Carrier ID to MES, Retrieve Recipe Type"},
+		{"id":"b790af8e10c031cb","fromNode":"22367faff5ee0f16","fromSide":"right","toNode":"a599659cb03d31ca","toSide":"right","fromEnd":"arrow","color":"6","label":"6. EAP will send the Recipe body to RMS for verification. If correct, RMS will send an OK message back to EAP."},
+		{"id":"a5aa0aaed9268c4e","fromNode":"69638ed286535378","fromSide":"top","toNode":"a599659cb03d31ca","toSide":"left","fromEnd":"arrow","color":"6","label":"4. Send Recipe type and Equipment ID to RMS. RMS will return Recipe ID to EAP.\n"},
+		{"id":"037ab435c4a0cccd","fromNode":"69638ed286535378","fromSide":"left","toNode":"09387402d538c868","toSide":"bottom","fromEnd":"arrow","color":"6","label":"3. Prior to check-in, confirm with ECS if equipment status allows check-in."}
+	]
+}

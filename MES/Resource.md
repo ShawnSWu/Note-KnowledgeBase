@@ -21,7 +21,7 @@
    
     **這些Sub-Resource的type都是process, 概念上有點像一個Resource是由幾個Sub-Resource線性組成的**
 
-## **一個Resource能**提供不同的[[Service]]
+## **一個Resource能**提供不同的[[MES/Service]]
 
 例如:
 * 烤箱 (Resource) 能提供烘烤服務 (Service)

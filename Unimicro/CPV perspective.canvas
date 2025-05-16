@@ -1,0 +1,28 @@
+{
+	"nodes":[
+		{"id":"99b23cf610d92f2d","type":"text","text":"# CPV\n## Critical parameter value\n\n## **Step 3**: After obtaining the data from Steps 1 and 2, calculate the SPC data.","x":-167,"y":111,"width":635,"height":224,"color":"4"},
+		{"id":"f04c28fd0bd8fa73","type":"text","text":"# SPC\n## SPC will send an notification to the user based on the calculation results.\n","x":-127,"y":565,"width":637,"height":221,"color":"4"},
+		{"id":"682b415f5fe06a27","type":"text","text":"# EDC\n## 設備數據收集(Equipment Data Collection)\n\n### 從製程設備取得詳細的運作數據\n","x":-210,"y":-257,"width":244,"height":50,"color":"4"},
+		{"id":"830d9eb593618e0e","type":"text","text":"# EDC\n## 設備數據收集(Equipment Data Collection)\n\n### 從製程設備取得詳細的運作數據\n","x":-218,"y":-426,"width":244,"height":50,"color":"4"},
+		{"id":"f16d4aa840926131","type":"text","text":"# EDC\n## 設備數據收集(Equipment Data Collection)\n\n### 從製程設備取得詳細的運作數據\n","x":-212,"y":-416,"width":244,"height":50,"color":"4"},
+		{"id":"5311b7b0d39538f7","type":"text","text":"## Send OOS (Out of Specification) or \n## OOC (Out of Control) results to Alarm/OCAP for handling.","x":-1353,"y":567,"width":559,"height":187,"color":"4"},
+		{"id":"8c327c8c41ddaa87","type":"text","text":"# EAP\n### ","x":-1820,"y":-400,"width":188,"height":50,"color":"4"},
+		{"id":"7977595cc32be211","type":"text","text":"# EAP\n### Equipment Automation Program (設備自動化程式)","x":-1794,"y":-243,"width":162,"height":50,"color":"4"},
+		{"id":"ee5b46a1642ac8de","type":"text","text":"# EAP\n### Equipment Automation Program (設備自動化程式)","x":-1782,"y":-373,"width":162,"height":50,"color":"4"},
+		{"id":"f718df7333407d37","type":"text","text":"# EAP\n### Equipment Automation Program ","x":-1991,"y":-411,"width":372,"height":227,"color":"4"},
+		{"id":"17476219df2c2aba","type":"text","text":"# 0-1, 0-2 are Preconditions","x":-1265,"y":-678,"width":538,"height":63,"color":"3"},
+		{"id":"fc5e580778bb8204","type":"text","text":"# EDC\n## Equipment Data Collection\n","x":-212,"y":-427,"width":462,"height":221,"color":"4"},
+		{"id":"aa5cef8c2777b45e","type":"text","text":"# Should go through kafka","x":-1180,"y":-207,"width":466,"height":63,"color":"3"},
+		{"id":"24fcf38485302eff","type":"text","text":"# MES\n## Manufacturing Execution System\n### 製造執行系統\n","x":-1720,"y":158,"width":122,"height":55,"color":"4"},
+		{"id":"67b0fae5c02e478e","type":"text","text":"# MES\n## Manufacturing Execution System\n###\n","x":-2115,"y":148,"width":520,"height":153,"color":"4"}
+	],
+	"edges":[
+		{"id":"3bdc04922518fa7f","fromNode":"99b23cf610d92f2d","fromSide":"left","toNode":"24fcf38485302eff","toSide":"right","fromEnd":"arrow","color":"4","label":"1. CPV obtains the Check-in and Check-out times for Material from MES."},
+		{"id":"71f2088af522611c","fromNode":"fc5e580778bb8204","fromSide":"bottom","toNode":"99b23cf610d92f2d","toSide":"top","fromEnd":"arrow","color":"4","label":"2. CPV and EDC obtains data from Check-in to Check-out time."},
+		{"id":"fac2bcbeea0a82be","fromNode":"7977595cc32be211","fromSide":"right","toNode":"682b415f5fe06a27","toSide":"left","label":"Continuously upload stream data to EDC...\n"},
+		{"id":"2d2b882c99e20d93","fromNode":"99b23cf610d92f2d","fromSide":"bottom","toNode":"f04c28fd0bd8fa73","toSide":"top","color":"4","label":"3. CPV sends the calculation results to SPC."},
+		{"id":"3affacee3e82005b","fromNode":"8c327c8c41ddaa87","fromSide":"top","toNode":"830d9eb593618e0e","toSide":"top","color":"3","label":"0-1. EAP asks for the parameters to be collected before EDC production."},
+		{"id":"81b81ca31f01e51a","fromNode":"f16d4aa840926131","fromSide":"left","toNode":"ee5b46a1642ac8de","toSide":"right","color":"3","label":"0-2. EDC responds with the parameters to be collected before EDC production."},
+		{"id":"3d05d0dac9633b40","fromNode":"f04c28fd0bd8fa73","fromSide":"left","toNode":"5311b7b0d39538f7","toSide":"right","label":"send notification by"}
+	]
+}
