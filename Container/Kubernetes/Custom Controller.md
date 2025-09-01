@@ -1,4 +1,6 @@
-## Controller 就像是一個自動化的管理員，它會監聽某個資源的狀態，然後根據期望狀態（desired state）來調整實際狀態（current state），每個Resource都有自己的controller，
+# Custom Controller
+
+Controller 就像是一個自動化的管理員，它會監聽某個資源的狀態，然後根據期望狀態（desired state）來調整實際狀態（current state），每個 Resource 都有自己的 controller。
 
 舉個簡單的例子：
 
@@ -7,7 +9,7 @@
 - **我們的 FlightBooking Controller** 監聽 `FlightBooking` CR，然後幫我們執行機票預訂的邏輯！
 
 
-## K8s Controller 主要由 **兩個核心概念** 組成：
+## K8s Controller 主要由兩個核心概念組成：
 
 1. **Informer（監聽機制）**
     - 負責監聽 K8s 資源 (監聽ETCD) 的變化（例如 `FlightBooking` CRD 被新增、更新、刪除）。
@@ -16,7 +18,7 @@
         - 發送 API 請求到第三方航班預訂系統
         - 更新 `FlightBooking` 的狀態
 
-## Controller 其實就是一段程式，一段拿來真正做事情的程式
+## Controller 其實就是一段程式，一段拿來真正做事情的程式：
 ```go
 package main
 

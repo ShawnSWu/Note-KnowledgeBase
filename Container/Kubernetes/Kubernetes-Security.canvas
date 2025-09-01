@@ -1,0 +1,40 @@
+{
+	"nodes":[
+		{"id":"fa730c0ecb55a9c8","type":"group","x":-5868,"y":-4431,"width":11736,"height":8863,"color":"#ff00d4","label":"Security"},
+		{"id":"baf94a0a3d752ceb","type":"group","x":-5713,"y":-3243,"width":4770,"height":1323,"label":"對kube API發出指令時，會經過的流程"},
+		{"id":"4ca06c34e1dc3078","type":"group","x":1531,"y":2872,"width":3831,"height":1396,"label":"Account"},
+		{"id":"cb07eab9c54a9188","type":"file","file":"Container/Kubernetes/ClusterRole.md","x":1020,"y":406,"width":1602,"height":546},
+		{"id":"a8d70a34de44674c","type":"text","text":"","x":-3001,"y":-2252,"width":1126,"height":312},
+		{"id":"d3a3c1fa1a1e1fe8","type":"text","text":"","x":-3973,"y":-3231,"width":737,"height":271},
+		{"id":"cac59559fe5a1710","type":"text","text":"# Admission Controller Webhook\n\n## Webhook 是一種通過 HTTP 回調（callback）與外部服務通信的機制。\n## 它允許我們透過自己寫一個API 來讓 Admission Controller 呼叫，等於把修改（Mutating）或驗證（Validating）邏輯外包給一個自定義的API，而不是依賴內建的控制器。\n### 你可以自己 寫API（用任何語言，例如 Go、Python 等），部署為一個 Web 服務，\n\n## ValidatingAdmissionWebhook\n\n ### 用於自定義資源的驗證邏輯\n  - Kubernetes 發送資源給你的服務，你的程式檢查資源並返回是否允許（Allow）或拒絕（Deny）。\n  - 典型用途：強制執行安全策略、檢查配置是否合規等。\n## MutatingAdmissionWebhook \n### 用於自定義資源的修改邏輯。\n- Kubernetes 會將請求的資源發送到你的 Webhook 服務，你的程式可以修改資源並返回結果。\n- 典型用途：注入 Sidecar 容器、添加標籤、設置默認值等。\n\n## Config\n\n```yaml\napiVersion: admissionregistration.k8s.io/v1\nkind: ValidatingWebhookConfiguration\nmetadata:\n  name: my-validating-webhook\nwebhooks:\n- name: validate.mycompany.com\n  clientConfig:\n    service:\n      name: webhook-service ==========================================================> API的位置\n      namespace: default\n      path: \"/validate\"  =============================================================> API的位置\n    caBundle: <base64-encoded-CA-cert>\n  rules:\n  - operations: [\"CREATE\", \"UPDATE\"]\n    apiGroups: [\"\"]\n    apiVersions: [\"v1\"]\n    resources: [\"pods\"]\n  admissionReviewVersions: [\"v1\"]\n```\n\n這個配置告訴 Kubernetes：「當有 Pod 的 CREATE 或 UPDATE 操作時，呼叫我指定的 Webhook 服務來驗證資源。」\n\n- **webhooks**: 定義了一個或多個 Webhook。\n- **clientConfig**: 告訴 Kubernetes 如何聯繫你的 Webhook 服務。\n- **rules**: 指定什麼時候觸發這個 Webhook（例如針對哪些資源和操作）。\n- **caBundle** 是 clientConfig 的一部分，它是一個 **Base64 編碼的 CA 憑證**（Certificate Authority Certificate）。\n  它的作用是讓 Kubernetes API Server **驗證 Webhook 服務的身份**，確保通信是安全的。","x":-4246,"y":-310,"width":1112,"height":1540},
+		{"id":"f2c0224eab7cb399","type":"text","text":"# 當你透過 kubectl 或其他方式向 Kubernetes API 發送請求（例如創建一個 Pod）時，流程如下：\n\n1. **認證（Authentication）**：確認你是誰。\n2. **授權（Authorization）**：確認你有權限這麼做。\n3. **Admission Control**：在這裡，Admission Controllers 介入，根據啟用的控制器進行驗證或修改。\n4. **持久化**：如果通過上述步驟，請求才會被存入 etcd。","x":-5686,"y":-3979,"width":1363,"height":433},
+		{"id":"56fb737f033760ea","type":"file","file":"Container/Kubernetes/attachments/Pasted image 20250314014037.png","x":-5704,"y":-3222,"width":4730,"height":1263},
+		{"id":"381e3d1de773e583","type":"text","text":"Authorization - ABAC（Attribute-Based Access Control）","x":-289,"y":-2585,"width":825,"height":603},
+		{"id":"234376af9ba977fb","type":"file","file":"Container/Kubernetes/Admission controller.md","x":-3961,"y":-1610,"width":2685,"height":1075},
+		{"id":"10ad5ab02de343d4","type":"file","file":"Container/Kubernetes/User Account.md","x":3451,"y":3194,"width":1450,"height":746},
+		{"id":"9e93bc003bb983d3","type":"text","text":"# 為什麼需要兩種 Role，而不能只有一種 Role？\n\n### 簡單比喻\n## 把 **Role** 和 **ClusterRole** 想像成房間鑰匙與整棟大樓的鑰匙：\n- **Role** →「房間鑰匙」：只能開某個房間的門（某個命名空間），適合給普通住戶。\n- **ClusterRole** →「大樓鑰匙」：能開整棟樓的所有門（整個集群），適合給管理員。\n\n如果只用一種鑰匙：\n- 只能開特定房間（無法管理大樓內的公共設施）。\n- 或者能開所有房間（權限過大，增加安全風險）。\n\n\n## 1. 命名空間的隔離需求\nKubernetes 使用 **Namespace（命名空間）** 來隔離不同的應用、團隊或環境（例如 dev、prod）。如果只有一個 Role，無法限制權限只在特定命名空間內生效。\n### **例子**\n- 你希望 **團隊 A** 只能管理 `team-a` 命名空間的 Pod，但不能動 `team-b` 的資源。如果只有一個通用的 Role，可能無法限制範圍，導致團隊 A 誤操作其他團隊的資源。\n\n---\n## 2. Cluster級資源的管理\n有些 Kubernetes 資源（例如 **Node、PersistentVolume、Namespace**）是**Cluster級別**的，不屬於任何命名空間。如果只有 Role（只能作用於特定命名空間），那麼就無法管理這些集群級資源。\n### **例子**\n- 你希望某個使用者可以管理所有 Node。如果只使用 Role，就需要在每個命名空間內都定義權限，但 **Node 是集群級資源**，這樣做行不通。這時就需要 **ClusterRole**。\n\n---\n## 3. 權限管理的靈活性與安全性\n- 如果只有一種 Role，它要麼只能管理命名空間內的資源（無法管控Cluster級別的資源），要麼能管理所有東西（缺乏細粒度控制）。\n- Kubernetes 遵循 **最小權限原則（Least Privilege）**，只給使用者所需的最低權限。透過 **Role** 和 **ClusterRole** 的區分，可以更靈活地管理權限。\n\n### **例子**\n- 你希望某個開發者 **只能在 `dev` 命名空間內部署應用**，這時 **Role** 就夠了。\n- 如果用一個通用的 Role，可能會不小心給他 **整個集群的部署權限**，這就會有風險。\n\n","x":2106,"y":-1461,"width":2789,"height":1371},
+		{"id":"ea5dcfc18cb27465","type":"text","text":"Authorization - webhook","x":4752,"y":-2605,"width":990,"height":572},
+		{"id":"b15bb5e511a0bb9e","type":"file","file":"Container/Kubernetes/RoleBinding.md","x":4140,"y":1546,"width":1621,"height":955},
+		{"id":"7c653a44becd71ea","type":"file","file":"Container/Kubernetes/Authorization.md","x":518,"y":-4170,"width":1157,"height":994},
+		{"id":"32d246f416e00d40","type":"file","file":"Container/Kubernetes/Role.md","x":4097,"y":380,"width":1654,"height":783},
+		{"id":"1eee9dbd3849afbb","type":"file","file":"Container/Kubernetes/Authorization - RBAC（Role-Based Access Control）.md","x":2689,"y":-2624,"width":1407,"height":785},
+		{"id":"7ba7a20ed7fcec36","type":"file","file":"Container/Kubernetes/ClusterRoleBinding.md","x":975,"y":1591,"width":1749,"height":960},
+		{"id":"c8a4c5484a7d4442","type":"file","file":"Container/Kubernetes/ServiceAccount.md","x":1830,"y":3027,"width":1292,"height":1074},
+		{"id":"49698e89d34cc99e","type":"text","text":"Authorization - Node","x":1221,"y":-2603,"width":681,"height":723}
+	],
+	"edges":[
+		{"id":"00f39680f53751f3","fromNode":"7ba7a20ed7fcec36","fromSide":"bottom","toNode":"4ca06c34e1dc3078","toSide":"top"},
+		{"id":"d4c9a953e0cc9828","fromNode":"b15bb5e511a0bb9e","fromSide":"bottom","toNode":"4ca06c34e1dc3078","toSide":"top"},
+		{"id":"cfdb70ce75348169","fromNode":"234376af9ba977fb","fromSide":"top","toNode":"a8d70a34de44674c","toSide":"bottom"},
+		{"id":"f8c14adf123d1e5b","fromNode":"7c653a44becd71ea","fromSide":"left","toNode":"d3a3c1fa1a1e1fe8","toSide":"top"},
+		{"id":"fec78b75bf6f0fe5","fromNode":"7c653a44becd71ea","fromSide":"bottom","toNode":"381e3d1de773e583","toSide":"top"},
+		{"id":"cb72fd3ab6a3f015","fromNode":"32d246f416e00d40","fromSide":"bottom","toNode":"b15bb5e511a0bb9e","toSide":"top","label":"Binding"},
+		{"id":"847b248bfe5a2fe6","fromNode":"9e93bc003bb983d3","fromSide":"bottom","toNode":"32d246f416e00d40","toSide":"top"},
+		{"id":"35df7c44661b5e16","fromNode":"1eee9dbd3849afbb","fromSide":"bottom","toNode":"9e93bc003bb983d3","toSide":"top"},
+		{"id":"303c23c0a5365ff0","fromNode":"7c653a44becd71ea","fromSide":"bottom","toNode":"1eee9dbd3849afbb","toSide":"top"},
+		{"id":"dad4cf3b5ec12763","fromNode":"cb07eab9c54a9188","fromSide":"bottom","toNode":"7ba7a20ed7fcec36","toSide":"top","label":"Binding"},
+		{"id":"47bd65bfa39eb39e","fromNode":"7c653a44becd71ea","fromSide":"bottom","toNode":"ea5dcfc18cb27465","toSide":"top"},
+		{"id":"d7d0673e6809f8db","fromNode":"7c653a44becd71ea","fromSide":"bottom","toNode":"49698e89d34cc99e","toSide":"top"},
+		{"id":"35245295b70f9929","fromNode":"9e93bc003bb983d3","fromSide":"bottom","toNode":"cb07eab9c54a9188","toSide":"top"}
+	]
+}

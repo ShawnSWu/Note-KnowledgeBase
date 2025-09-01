@@ -1,5 +1,6 @@
-## 就是真實的Ingress的實現
-### 。它監聽 Ingress 資源並將外部流量路由至對應服務，通常以 Pod 形式運行。
+# Ingress Controller
+
+Ingress Controller 就是真實的 Ingress 的實現。它監聽 Ingress 資源並將外部流量路由至對應服務，通常以 Pod 形式運行。
 
 ## 主要特性
 - **流量管理**：解析 Ingress 配置並執行路由與負載均衡。

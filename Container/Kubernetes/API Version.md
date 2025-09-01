@@ -1,4 +1,6 @@
-## Kubernetes 用來管理資源的 API 的版本號，告訴系統用哪個版本解析你的資源。
+# API Version
+
+Kubernetes 用來管理資源的 API 的版本號，告訴系統用哪個版本解析你的資源。
 
 ### 常見形式
 

@@ -1,4 +1,6 @@
-### 最常見的驗證方式，它透過定義「角色」來管理權限，再把這些角色指派給特定的「使用者、群組或 ServiceAccount」
+# Authorization - RBAC（Role-Based Access Control）
+
+最常見的驗證方式，它透過定義「角色」來管理權限，再把這些角色指派給特定的「使用者、群組或 ServiceAccount」。
 
 ## 主要概念
 

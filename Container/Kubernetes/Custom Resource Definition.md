@@ -1,12 +1,14 @@
-## Kubernetes 原生提供的資源（像是 Pod、Service、Deployment）已經很好用了，但有時候我們想要定義自己的資源類型，比如「訂單管理系統」可能需要 `Order` 這種自定義的資源。這時候，**CRD（Custom Resource Definition）** 就派上用場了！
+# Custom Resource Definition
 
-## 簡單來說，CRD 讓我們可以在 Kubernetes 中創建新的 API 物件，就像內建的 Pod 一樣操作它們。
+Kubernetes 原生提供的資源（像是 Pod、Service、Deployment）已經很好用了，但有時候我們想要定義自己的資源類型，比如「訂單管理系統」可能需要 `Order` 這種自定義的資源。這時候，**CRD（Custom Resource Definition）** 就派上用場了！
+
+簡單來說，CRD 讓我們可以在 Kubernetes 中創建新的 API 物件，就像內建的 Pod 一樣操作它們。
 
 ### CRD 的基本架構
 
 在 Kubernetes 中，CRD 本身是一種 API 資源，當我們定義了一個 CRD，K8s 會自動幫我們註冊這個新的 API 類型。
 
-#### 以下是一個以 "訂機票"的例子，我們創建了訂機票物件
+#### 以下是一個以“訂機票”的例子，我們創建了訂機票物件
 
 ```yaml
 apiVersion: apiextensions.k8s.io/v1
@@ -56,6 +58,7 @@ spec:
 
 ```
 
-#### **served**：控制該版本是否可以被 Kubernetes API 伺服器提供並且用於操作 CR 資源（創建、更新、讀取）。
+**重要屬性說明：**
 
-#### **storage**：指定該版本是否是主存儲版本，決定 Kubernetes 在 etcd 中存儲資源數據時使用的版本。
+- **served**：控制該版本是否可以被 Kubernetes API 伺服器提供並且用於操作 CR 資源（創建、更新、讀取）。
+- **storage**：指定該版本是否是主存儲版本，決定 Kubernetes 在 etcd 中存儲資源數據時使用的版本。

@@ -1,4 +1,6 @@
-# 用來將 **ClusterRoleRole** 綁定到指定的「使用者、群組Group或 ServiceAccount」，讓它們擁有對應的權限。
+# ClusterRoleBinding
+
+用來將 **ClusterRole** 綁定到指定的「使用者、群組 Group 或 ServiceAccount」，讓它們擁有對應的權限。
 
 ```yaml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -15,4 +17,4 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
 ```
 
-### 這個範例把 cluster-admin（一個內建的 ClusterRole，擁有幾乎所有權限）綁定給使用者 admin-user，讓他在整個集群有管理權限。
+**說明：**這個範例把 cluster-admin（一個內建的 ClusterRole，擁有幾乎所有權限）綁定給使用者 admin-user，讓他在整個集群有管理權限。

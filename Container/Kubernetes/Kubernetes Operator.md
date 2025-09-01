@@ -1,3 +1,4 @@
+# Kubernetes Operator
 ## 想像一下，你在使用 Kubernetes 部署 **Kafka** 時，通常需要設定一大堆的東西，例如：
 
 - **Kafka Broker** 的數量（replicas）

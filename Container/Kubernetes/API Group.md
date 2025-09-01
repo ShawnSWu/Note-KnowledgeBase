@@ -1,3 +1,5 @@
+# API Group
+
 ## 為什麼 Kubernetes 需要 API Group？
 
 在 Kubernetes 裡，API Group 主要是為了 **組織資源、支援版本控制、擴展 API**，讓整個系統更靈活、更容易管理。
@@ -24,7 +26,7 @@
 
 API Group 主要出現在 `apiVersion` 這個欄位，格式是：
 
-```yaml=
+```yaml
 apiVersion: <API Group>/<版本>
 kind: <資源類型>
 metadata:
@@ -35,7 +37,7 @@ metadata:
 
 🔹 **Deployment（屬於 `apps` API Group）**
 
-```yaml=
+```yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -44,7 +46,7 @@ metadata:
 
 🔹 **Ingress（屬於 `networking.k8s.io` API Group）**
 
-```yaml=
+```yaml
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -52,7 +54,7 @@ metadata:
 ```
 
 🔹 **Pod（核心 API，沒有 API Group）**
-```yaml=
+```yaml
 apiVersion: v1
 kind: Pod
 metadata:

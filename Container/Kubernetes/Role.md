@@ -1,4 +1,6 @@
-## **Role** 是 Kubernetes 中用來設定「特定 Namespace」內資源操作權限的物件。
+# Role
+
+**Role** 是 Kubernetes 中用來設定「特定 Namespace」內資源操作權限的物件。
 
 ```yaml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -11,4 +13,4 @@ rules:
   resources: ["pods"]
   verbs: ["get", "list"]  # 允許讀取 Pod 資訊
 ```
-### 上面的範例，代表著這個角色有著 對「pod」執行「get」,「list」操作的權限
+**說明：** 上面的範例代表著這個角色有著對「pod」執行「get」和「list」操作的權限。

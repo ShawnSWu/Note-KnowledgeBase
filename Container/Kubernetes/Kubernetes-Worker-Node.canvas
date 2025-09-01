@@ -1,0 +1,42 @@
+{
+	"nodes":[
+		{"id":"fc07975f6c2da689","type":"group","x":-5926,"y":-2835,"width":4349,"height":2119,"color":"2","label":"Ingress"},
+		{"id":"d77cc9b52ea5fbe3","type":"group","x":-6113,"y":1326,"width":5052,"height":1627,"color":"5","label":"Deployment"},
+		{"id":"c5cc32d6e3f192ed","type":"group","x":-3617,"y":1711,"width":2359,"height":783,"label":"Pod"},
+		{"id":"5b4bbeffd3552c40","type":"text","text":"# Ingress的工作流程\n## 1. 需要預先部署 Ingress Controller：\n* Ingress Controller是以 Pod 的形式存在的，負責監聽並處理流量(例如Nginx)。\n## 2. 建立 Ingress Resource\n* 如果 Cluster 有多個 Ingress Controller，就會在裡面加個 ingress.class 來指定某種 Controller 的種類來處理。\n* 不過一般來說，只有一個 Controller 的話，它會自己搞定所有 Ingress 資源。\n> 流量路由：外部流量到達 Ingress Controller，Controller 根據 Ingress Resource 的規則將流量轉發到對應的 Service，然後到達後端 Pod。","x":-5703,"y":-1745,"width":919,"height":890,"color":"1"},
+		{"id":"94819f9ac3fc6dea","type":"file","file":"Container/Kubernetes/Ingress.md","x":-5749,"y":-2712,"width":2692,"height":769,"color":"2"},
+		{"id":"78e6d5c52b97cbce","type":"file","file":"Container/Kubernetes/Node.md","x":-6156,"y":-3807,"width":1561,"height":642},
+		{"id":"4e6c5c76f4f1413a","type":"text","text":"","x":-2376,"y":-3959,"width":250,"height":60},
+		{"id":"724a8f33aaae9a76","type":"text","text":"# Ingress Controller 與 Ingress 的關係\n## Ingress 是規則，Ingress Controller 是執行者\n\n  - **Ingress** 只是一個 YAML 設定，定義哪些請求應該發送到哪個 Service。\n  - **Ingress Controller** 負責讀取 Ingress 規則，並實際處理外部請求，將流量轉發到對應的 Service。\n## Ingress 需要 Ingress Controller 才能運作\n  * 只有定義 Ingress 規則，請求並不會自動被處理，必須安裝一個 **Ingress Controller** \n    (如 NGINX Ingress Controller、Traefik、HAProxy、Istio Gateway 等)。\n  * Ingress Controller 會監聽 Kubernetes Ingress 資源，並根據定義的規則來配置負載均衡，確保請求能夠正確轉發。","x":-2884,"y":-2564,"width":1229,"height":736},
+		{"id":"b293347ff47cb215","type":"file","file":"Container/Kubernetes/Service.md","x":-4662,"y":348,"width":1775,"height":674,"color":"6"},
+		{"id":"f5ba2a00ba8f12b6","type":"text","text":"# Ingress 與 Service\n\n## Ingress 透過 **域名 (Host) 和路由 (Path)** 來決定將請求發送到哪個 Service，使得 **多個 Service 可以共用同一個外部 IP**，從而減少資源消耗並提供更靈活的訪問方式。\n\n#### 簡單來說，**Ingress 是 Kubernetes 集群的「大門」，Service 則是內部不同應用的「接待櫃檯」，Ingress 負責把外部訪問導向正確的 Service，Service 再負責將請求分發給對應的 Pod。**","x":-4950,"y":-318,"width":1863,"height":421,"color":"6"},
+		{"id":"f4e04ce4feaf5915","type":"file","file":"Container/Kubernetes/Ingress Controller.md","x":-4347,"y":-1672,"width":1561,"height":712,"color":"2"},
+		{"id":"d7f762527e4961c2","type":"text","text":"# Deployment \n\n## 。Deployment 是 Kubernetes 中用於管理 Pod 的控制器，確保應用程式以期望的狀態運行。\n## 。它支援自動擴展、滾動更新和回滾功能。\n\n### 主要特性\n- **副本管理**：維護指定數量的 Pod 副本，自動替換失敗的 Pod。\n- **更新策略**：支援滾動更新（Rolling Update）和回滾到先前版本。\n- **聲明式配置**：通過 YAML 文件定義目標狀態，Kubernetes 自動實現。\n\n## 基本範例\n```yaml\napiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: example-deployment\nspec:\n  replicas: 3\n  selector:\n    matchLabels:\n      app: my-app\n  template:\n    metadata:\n      labels:\n        app: my-app\n    spec:\n      containers:\n      - name: nginx\n        image: nginx:latest","x":-5957,"y":1480,"width":1308,"height":897},
+		{"id":"596a03bbdaf8066a","type":"file","file":"Container/Kubernetes/Persistent Volume Claim.md","x":-4579,"y":3173,"width":1036,"height":704},
+		{"id":"eff9686173f2d3e3","type":"file","file":"Container/Kubernetes/ReplicaSet.md","x":-6102,"y":3205,"width":1275,"height":569},
+		{"id":"d1e7cb00f4d6f81f","type":"text","text":"# 兩者關係\n在 Kubernetes 中，**Pod** 是運行應用的最小單位，但 Pod 本身**不具備自我修復能力**，如果掛掉就需要手動重建。而 **Deployment** 則像是一個管理員，負責確保 Pod 的數量和狀態符合預期。\n\n當你定義一個 **Deployment**，它會自動創建並維護指定數量的 **Pod**，確保應用穩定運行。如果某個 Pod 失敗，Deployment 會**自動重建**新的 Pod 來補上。如果需要更新應用，Deployment 會執行**滾動更新**，逐步替換舊的 Pod，而不影響服務的可用性。此外，Deployment 也允許**水平擴展或縮減 Pod 數量**，確保應用能適應不同的流量需求。\n\n簡而言之，Pod 是應用的「執行單元」，而 Deployment 則是「管理機制」，確保應用穩定、高可用並且易於維護。","x":-4817,"y":2555,"width":1054,"height":284,"color":"#00ffbf"},
+		{"id":"f11d7d6dad5c2e53","type":"file","file":"Container/Kubernetes/Pod.md","x":-3602,"y":1820,"width":1212,"height":554,"color":"5"},
+		{"id":"61dce1029ba42094","type":"text","text":"# Pod\n","x":-2259,"y":1965,"width":394,"height":229,"color":"5"},
+		{"id":"598e14b95898a92e","type":"text","text":"# Pod\n","x":-1741,"y":1968,"width":402,"height":242,"color":"5"},
+		{"id":"bb4c49ae6f27022f","type":"file","file":"Container/Kubernetes/attachments/Pasted image 20250310124806.png","x":-2528,"y":-443,"width":1864,"height":1630},
+		{"id":"51ee2f50e657335a","type":"file","file":"Container/Kubernetes/attachments/Pasted image 20250310020546.png","x":-293,"y":-1551,"width":6449,"height":3997},
+		{"id":"d7bcc6937be6f152","type":"file","file":"Container/Kubernetes/Persistent Volume.md","x":-1985,"y":3306,"width":943,"height":653},
+		{"id":"0d2d16d744e8cc6e","type":"text","text":"# **PV** 是實際的儲存資源，而 **PVC** 是用戶的需求聲明。\n# **PVC** 會根據需求自動匹配可用的 **PV**，實現動態綁定或靜態綁定。","x":-3250,"y":3354,"width":1013,"height":356}
+	],
+	"edges":[
+		{"id":"afb05e6817b2af25","fromNode":"f5ba2a00ba8f12b6","fromSide":"top","toNode":"fc07975f6c2da689","toSide":"bottom","toEnd":"none"},
+		{"id":"fc833f1289ab6dbb","fromNode":"d7f762527e4961c2","fromSide":"top","toNode":"b293347ff47cb215","toSide":"bottom"},
+		{"id":"c4fba30c11b77a5a","fromNode":"d1e7cb00f4d6f81f","fromSide":"left","toNode":"d7f762527e4961c2","toSide":"bottom"},
+		{"id":"73b611072222b1fc","fromNode":"0d2d16d744e8cc6e","fromSide":"left","toNode":"596a03bbdaf8066a","toSide":"right"},
+		{"id":"8693347088d948de","fromNode":"d1e7cb00f4d6f81f","fromSide":"right","toNode":"f11d7d6dad5c2e53","toSide":"left"},
+		{"id":"f3282a2a4675efe8","fromNode":"b293347ff47cb215","fromSide":"bottom","toNode":"f11d7d6dad5c2e53","toSide":"top","label":"Pod「不一定」要使用Deployment管理\n也可以單獨存在"},
+		{"id":"05888e76315d2287","fromNode":"b293347ff47cb215","fromSide":"bottom","toNode":"61dce1029ba42094","toSide":"top"},
+		{"id":"989038fdddcf479c","fromNode":"b293347ff47cb215","fromSide":"bottom","toNode":"598e14b95898a92e","toSide":"top"},
+		{"id":"430777862bd7de26","fromNode":"b293347ff47cb215","fromSide":"top","toNode":"f5ba2a00ba8f12b6","toSide":"bottom","toEnd":"none"},
+		{"id":"f48f6b11ddd7c08a","fromNode":"f5ba2a00ba8f12b6","fromSide":"right","toNode":"bb4c49ae6f27022f","toSide":"left"},
+		{"id":"fe786ef6dcae63a2","fromNode":"f11d7d6dad5c2e53","fromSide":"bottom","toNode":"d7bcc6937be6f152","toSide":"top","label":"可共用Volume"},
+		{"id":"803fbd5430797903","fromNode":"61dce1029ba42094","fromSide":"bottom","toNode":"d7bcc6937be6f152","toSide":"top"},
+		{"id":"0b0caeef48aa6dfa","fromNode":"598e14b95898a92e","fromSide":"bottom","toNode":"d7bcc6937be6f152","toSide":"top"},
+		{"id":"3b2c9535c97e7419","fromNode":"0d2d16d744e8cc6e","fromSide":"right","toNode":"d7bcc6937be6f152","toSide":"left"}
+	]
+}
